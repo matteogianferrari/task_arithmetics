@@ -1,0 +1,26 @@
+model_id: openai/clip-vit-large-patch14
+revision: null
+data_root: ./data
+output_root: ./runs/vit-l14
+seed: 0
+split_seed: 0
+validation_fraction: 0.1
+test_fraction: 0.2
+download: true
+batch_size: 8
+accumulation_steps: 16
+num_workers: 4
+steps: 2000
+warmup_steps: 200
+learning_rate: 0.00001
+weight_decay: 0.1
+grad_clip: 1.0
+precision: fp32
+device: cuda:0
+gradient_checkpointing: true
+augment: false
+eval_every: 200
+save_every: 200
+sun_split: 1
+dtd_split: 1
+

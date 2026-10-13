@@ -1,0 +1,10 @@
+{
+  "MNIST": [
+    "a handwritten digit {}.",
+    "a photo of the number {}."
+  ],
+  "SVHN": [
+    "a house number {}.",
+    "a photo of the number {}."
+  ]
+}
