@@ -54,6 +54,7 @@ def build_head(
         device: Device used for one-time text encoding.
         templates: Optional replacement prompt templates with one positional placeholder.
         batch_size: Number of prompts encoded at once.
+
     Returns:
         A frozen classification head containing CPU float32 prototypes.
     """
@@ -63,8 +64,11 @@ def build_head(
     for template in templates:
         if template.count("{}") != 1:
             raise ValueError("Each prompt template must contain exactly one {} placeholder.")
+
     prompts = [template.format(name) for name in class_names for template in templates]
+
     text_encoder.eval().to(device)
+
     embeddings = []
     for start in range(0, len(prompts), batch_size):
         inputs = tokenizer(
@@ -77,6 +81,7 @@ def build_head(
         output = text_encoder(**inputs, return_dict=True).text_embeds.float()
         embeddings.append(F.normalize(output, dim=-1).cpu())
     prototypes = torch.cat(embeddings).reshape(len(class_names), len(templates), -1).mean(dim=1)
+
     return ClassificationHead(prototypes, logit_scale)
 
 

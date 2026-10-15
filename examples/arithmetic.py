@@ -11,7 +11,8 @@ def main() -> None:
     """Create the edited model corresponding to C + B - A.
 
     Args:
-        None.
+        None
+        .
     Returns:
         None.
     """
@@ -22,10 +23,13 @@ def main() -> None:
     parser.add_argument("--c", type=Path, required=True)
     parser.add_argument("--scale", type=float, default=0.5)
     parser.add_argument("--output", type=Path, required=True)
+
     args = parser.parse_args()
+
     first = TaskVector.load(args.a)
     second = TaskVector.load(args.b)
     third = TaskVector.load(args.c)
+
     analogy = third + second - first
     save_payload(args.output, analogy.apply_to(args.base, scale=args.scale))
 

@@ -35,14 +35,14 @@ class CLIPViT(nn.Module):
     def from_config(cls, config: dict[str, Any]) -> "CLIPViT":
         """Construct the backbone from checkpoint metadata without network access.
 
+        Hugging Face may modify its input dictionary while resolving attention settings.
+
         Args:
             config: Serialized CLIP vision configuration, including projection_dim.
 
         Returns:
-            A CLIPViT instance with newly initialized parameters.
-            Checkpoint weights must be loaded separately.
+            A CLIPViT instance with newly initialized parameters (checkpoint weights must be loaded separately).
         """
-        # Hugging Face may modify its input dictionary while resolving attention settings.
         return cls(CLIPVisionConfig.from_dict(deepcopy(config)))
 
     @classmethod
@@ -57,7 +57,7 @@ class CLIPViT(nn.Module):
         """
         config = model.config.vision_config.to_dict()
 
-        # The shared projection dimension belongs to the parent CLIP configuration.
+        # The shared projection dimension belongs to the parent CLIP configuration
         config["projection_dim"] = model.config.projection_dim
 
         backbone = cls.from_config(config)
@@ -124,11 +124,13 @@ class ClassificationHead(nn.Module):
         """
         super().__init__()
 
+        # Error check
         if weight.ndim != 2 or not torch.isfinite(weight).all():
             raise ValueError("Classification weights must be a finite matrix.")
         if (weight.norm(dim=-1) == 0).any() or not 0 < logit_scale < float("inf"):
             raise ValueError("Prototypes must be nonzero and logit_scale finite and positive.")
 
+        # Class attributes
         self.register_buffer("weight", F.normalize(weight.detach().float(), dim=-1))
         self.register_buffer("logit_scale", torch.tensor(logit_scale, dtype=torch.float32))
 
